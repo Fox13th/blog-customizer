@@ -8,16 +8,14 @@ import { defaultArticleState } from './../../constants/articleProps';
 import styles from './app.module.scss';
 
 export const App = () => {
-	const [asideState, setAsideState] = useState(defaultArticleState);
 	const [articleState, setArticleState] = useState(defaultArticleState);
 
-	const applyState = () => {
-		setArticleState(asideState);
+	const applyState = (state: typeof defaultArticleState) => {
+		setArticleState(state);
 	};
 
 	const resetState = () => {
 		setArticleState(defaultArticleState);
-		setAsideState(defaultArticleState);
 	};
 
 	return (
@@ -32,12 +30,7 @@ export const App = () => {
 					'--bg-color': articleState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm
-				state={asideState}
-				setState={setAsideState}
-				applyBut={applyState}
-				resetBut={resetState}
-			/>
+			<ArticleParamsForm applyBut={applyState} resetBut={resetState} />
 			<Article />
 		</main>
 	);

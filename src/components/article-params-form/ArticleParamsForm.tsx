@@ -16,25 +16,25 @@ import {
 	fontColors,
 	backgroundColors,
 	contentWidthArr,
+	ArticleStateType,
 } from 'src/constants/articleProps';
 
 type ArticleProps = {
-	state: typeof defaultArticleState;
-	setState: React.Dispatch<React.SetStateAction<typeof defaultArticleState>>;
-	applyBut: () => void;
+	applyBut: (state: typeof defaultArticleState) => void;
 	resetBut: () => void;
 };
 
-export const ArticleParamsForm = ({
-	state,
-	setState,
-	applyBut,
-	resetBut,
-}: ArticleProps) => {
+export const ArticleParamsForm = ({ applyBut, resetBut }: ArticleProps) => {
 	const [isOpen, setIsOpen] = useState(false);
+	const [asideState, setAsideState] = useState(defaultArticleState);
+
 	const asideRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
+		if (!isOpen) {
+			return;
+		}
+
 		const handleClick = (event: MouseEvent) => {
 			if (
 				asideRef.current &&
@@ -49,26 +49,17 @@ export const ArticleParamsForm = ({
 		return () => {
 			document.removeEventListener('click', handleClick);
 		};
-	}, []);
+	}, [isOpen]);
 
-	const changeFontFamily = (value: OptionType) => {
-		setState({ ...state, fontFamilyOption: value });
+	const updateFormField = (field: keyof ArticleStateType) => {
+		return (value: OptionType) => {
+			setAsideState((prev) => ({ ...prev, [field]: value }));
+		};
 	};
 
-	const changeFontColor = (value: OptionType) => {
-		setState({ ...state, fontColor: value });
-	};
-
-	const changeBackgroundColor = (value: OptionType) => {
-		setState({ ...state, backgroundColor: value });
-	};
-
-	const changeContentWidth = (value: OptionType) => {
-		setState({ ...state, contentWidth: value });
-	};
-
-	const changeFontSize = (value: OptionType) => {
-		setState({ ...state, fontSizeOption: value });
+	const resetAsideState = () => {
+		setAsideState(defaultArticleState);
+		resetBut();
 	};
 
 	return (
@@ -87,49 +78,49 @@ export const ArticleParamsForm = ({
 							Задайте параметры
 						</Text>
 						<Select
-							selected={state.fontFamilyOption}
+							selected={asideState.fontFamilyOption}
 							options={fontFamilyOptions}
 							title='Шрифт'
-							onChange={changeFontFamily}
+							onChange={updateFormField('fontFamilyOption')}
 						/>
 						<RadioGroup
 							name='FontSize'
 							options={fontSizeOptions}
-							selected={state.fontSizeOption}
+							selected={asideState.fontSizeOption}
 							title='Размер шрифта'
-							onChange={changeFontSize}
+							onChange={updateFormField('fontSizeOption')}
 						/>
 						<Select
-							selected={state.fontColor}
+							selected={asideState.fontColor}
 							options={fontColors}
 							title='цвет шрифта'
-							onChange={changeFontColor}
+							onChange={updateFormField('fontColor')}
 						/>
 						<Separator />
 						<Select
-							selected={state.backgroundColor}
+							selected={asideState.backgroundColor}
 							options={backgroundColors}
 							title='цвет фона'
-							onChange={changeBackgroundColor}
+							onChange={updateFormField('backgroundColor')}
 						/>
 						<Select
-							selected={state.contentWidth}
+							selected={asideState.contentWidth}
 							options={contentWidthArr}
 							title='ширина контента'
-							onChange={changeContentWidth}
+							onChange={updateFormField('contentWidth')}
 						/>
 						<div className={styles.bottomContainer}>
 							<Button
 								title='Сбросить'
 								htmlType='button'
 								type='clear'
-								onClick={resetBut}
+								onClick={resetAsideState}
 							/>
 							<Button
 								title='Применить'
 								htmlType='button'
 								type='apply'
-								onClick={applyBut}
+								onClick={() => applyBut(asideState)}
 							/>
 						</div>
 					</form>
