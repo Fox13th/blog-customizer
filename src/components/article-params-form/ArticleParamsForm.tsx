@@ -21,10 +21,17 @@ import {
 type ArticleProps = {
 	state: typeof defaultArticleState;
 	setState: React.Dispatch<React.SetStateAction<typeof defaultArticleState>>;
+	applyBut: () => void;
+	resetBut: () => void;
 };
 
-export const ArticleParamsForm = ({ state, setState }: ArticleProps) => {
-	const [isOpen, setIsOpen] = useState(true); // TODO: Потом вернуть на false
+export const ArticleParamsForm = ({
+	state,
+	setState,
+	applyBut,
+	resetBut,
+}: ArticleProps) => {
+	const [isOpen, setIsOpen] = useState(false);
 	const asideRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -112,8 +119,18 @@ export const ArticleParamsForm = ({ state, setState }: ArticleProps) => {
 							onChange={changeContentWidth}
 						/>
 						<div className={styles.bottomContainer}>
-							<Button title='Сбросить' htmlType='reset' type='clear' />
-							<Button title='Применить' htmlType='submit' type='apply' />
+							<Button
+								title='Сбросить'
+								htmlType='button'
+								type='clear'
+								onClick={resetBut}
+							/>
+							<Button
+								title='Применить'
+								htmlType='button'
+								type='apply'
+								onClick={applyBut}
+							/>
 						</div>
 					</form>
 				</aside>

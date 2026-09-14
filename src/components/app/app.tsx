@@ -8,20 +8,36 @@ import { defaultArticleState } from './../../constants/articleProps';
 import styles from './app.module.scss';
 
 export const App = () => {
-	const [defState, setDefState] = useState(defaultArticleState);
+	const [asideState, setAsideState] = useState(defaultArticleState);
+	const [articleState, setArticleState] = useState(defaultArticleState);
+
+	const applyState = () => {
+		setArticleState(asideState);
+	};
+
+	const resetState = () => {
+		setArticleState(defaultArticleState);
+		setAsideState(defaultArticleState);
+	};
+
 	return (
 		<main
 			className={clsx(styles.main)}
 			style={
 				{
-					'--font-family': defaultArticleState.fontFamilyOption.value,
-					'--font-size': defaultArticleState.fontSizeOption.value,
-					'--font-color': defaultArticleState.fontColor.value,
-					'--container-width': defaultArticleState.contentWidth.value,
-					'--bg-color': defaultArticleState.backgroundColor.value,
+					'--font-family': articleState.fontFamilyOption.value,
+					'--font-size': articleState.fontSizeOption.value,
+					'--font-color': articleState.fontColor.value,
+					'--container-width': articleState.contentWidth.value,
+					'--bg-color': articleState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm state={defState} setState={setDefState} />
+			<ArticleParamsForm
+				state={asideState}
+				setState={setAsideState}
+				applyBut={applyState}
+				resetBut={resetState}
+			/>
 			<Article />
 		</main>
 	);
